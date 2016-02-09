@@ -96,13 +96,14 @@ function physicsSimulator(settings) {
      *
      * @returns {boolean} true if system is considered stable; False otherwise.
      */
-    step: function () {
+    step: function (final) {
       accumulateForces();
       totalMovement = integrate(bodies, settings.timeStep);
 
-      bounds.update();
+
       var stableNow = totalMovement < settings.stableThreshold;
-      if (lastStable !== stableNow) {
+      if (lastStable !== stableNow || final) {
+        bounds.update();
         publicApi.fire('stable', stableNow);
       }
 
