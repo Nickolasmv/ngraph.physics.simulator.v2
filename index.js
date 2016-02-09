@@ -266,10 +266,13 @@ function physicsSimulator(settings) {
         if (!bodies[i].isPinned) {
           pq.push(
               Q.when().then(function(){
-                bodies[i].force.reset();
-              quadTree.updateBodyForce(bodies[i]).then(function(){
-                return dragForce.update(bodies[i]);
+               return  Q.when().then(function(){
+                return bodies[i].force.reset();
+               }).then(function(){
+                return quadTree.updateBodyForce(bodies[i]).then(function(){
+                  return dragForce.update(bodies[i]);
               })
+               })
           })
           );
         }
