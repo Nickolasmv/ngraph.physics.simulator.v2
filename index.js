@@ -263,7 +263,7 @@ function physicsSimulator(settings) {
        // body = bodies[i];
         // If body is pinned there is no point updating its forces - it should
         // never move:
-        if (!body.isPinned) {
+        if (!bodies[i].isPinned) {
           pq.push(
               Q.when().then(function(){
                 bodies[i].force.reset();
