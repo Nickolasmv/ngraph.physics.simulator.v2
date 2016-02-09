@@ -1,5 +1,5 @@
 {
-  "name": "ngraph.physics.simulator",
+  "name": "ngraph.physics.simulator.v2",
   "version": "0.0.12",
   "description": "Physics library for ngraph",
   "main": "index.js",
