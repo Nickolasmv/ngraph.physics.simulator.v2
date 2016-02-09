@@ -1,9 +1,11 @@
 /**
  * Manages a simulation of physical forces acting on bodies and springs.
  */
+var Q = require('Q');
 module.exports = physicsSimulator;
 
 function physicsSimulator(settings) {
+
   var Spring = require('./lib/spring');
   var expose = require('ngraph.expose');
   var merge = require('ngraph.merge');
@@ -52,7 +54,7 @@ function physicsSimulator(settings) {
   });
 
   // We allow clients to override basic factory methods:
-  var createQuadTree = settings.createQuadTree || require('ngraph.quadtreebh');
+  var createQuadTree = settings.createQuadTree || require('./lib/qtreebh');
   var createBounds = settings.createBounds || require('./lib/bounds');
   var createDragForce = settings.createDragForce || require('./lib/dragForce');
   var createSpringForce = settings.createSpringForce || require('./lib/springForce');
@@ -251,27 +253,33 @@ function physicsSimulator(settings) {
   function accumulateForces() {
     // Accumulate forces acting on bodies.
     var body,
+        pq =[];
         i = bodies.length;
 
     if (i) {
       // only add bodies if there the array is not empty:
       quadTree.insertBodies(bodies); // performance: O(n * log n)
       while (i--) {
-        body = bodies[i];
+       // body = bodies[i];
         // If body is pinned there is no point updating its forces - it should
         // never move:
         if (!body.isPinned) {
-          body.force.reset();
-
-          quadTree.updateBodyForce(body);
-          dragForce.update(body);
+          pq.push(
+              Q.when().then(function(){
+                bodies[i].force.reset();
+              quadTree.updateBodyForce(bodies[i]).then(function(){
+                return dragForce.update(bodies[i]);
+              })
+          })
+          );
         }
       }
     }
-
-    i = springs.length;
-    while(i--) {
-      springForce.update(springs[i]);
-    }
+    Q.allSettled(pq).then(function(){
+      i = springs.length;
+      while(i--) {
+        springForce.update(springs[i]);
+      }
+    })
   }
 };
