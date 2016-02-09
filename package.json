@@ -1,6 +1,6 @@
 {
   "name": "ngraph.physics.simulator.v2",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Physics library for ngraph",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/anvaka/ngraph.physics.simulator"
+    "url": "https://github.com/Nickolasmv/ngraph.physics.simulator.v2.git"
   },
   "dependencies": {
     "ngraph.events": "0.0.3",
